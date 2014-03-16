@@ -40,11 +40,11 @@
  * @copyright  2009-2014 Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      File available since Release 1.0.0
+ * @since      File available since Release 2.1.0
  */
 
 /**
- * Utility methods.
+ *
  *
  * @category   PHP
  * @package    CodeCoverage
@@ -52,53 +52,62 @@
  * @copyright  2009-2014 Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      Class available since Release 1.0.0
+ * @since      Class available since Release 2.1.0
  */
-class PHP_CodeCoverage_Util
+class PHP_CodeCoverage_Data_FileCollection
 {
     /**
-     * @param  string $file
-     * @return integer
+     * @var PHP_CodeCoverage_Data_File[]
      */
-    public static function numberOfLinesInFile($file)
+    private $files = array();
+
+    /**
+     * @param string $id
+     * @param array  $data
+     */
+    public function processData($id, array $data)
     {
-        $buffer = file_get_contents($file);
-        $lines  = substr_count($buffer, "\n");
+        foreach ($data as $file => $lines) {
+            if (!isset($this->files[$file])) {
+                $this->createFile($file, $lines);
+            }
 
-        if (substr($buffer, -1) !== "\n") {
-            $lines++;
+            $_lines = array();
+
+            foreach ($lines as $lineNumber => $flag) {
+                if ($flag == 1) {
+                    $_lines[] = $lineNumber;
+                }
+            }
+
+            $this->files[$file]->addCoveringTest($id, $_lines);
         }
-
-        return $lines;
     }
 
     /**
-     * @param  float   $a
-     * @param  float   $b
-     * @param  boolean $asString
-     * @param  boolean $fixedWidth
-     * @return float ($a / $b) * 100
+     * @param PHP_CodeCoverage_Data_FileCollection $other
      */
-    public static function percent($a, $b, $asString = false, $fixedWidth = false)
+    public function merge(PHP_CodeCoverage_Data_FileCollection $other)
     {
-        if ($asString && $b == 0) {
-            return '';
+    }
+
+    /**
+     * @param string $path
+     * @param array  $lines
+     */
+    private function createFile($path, array $lines)
+    {
+        $_lines             = new PHP_CodeCoverage_Data_LineCollection;
+        $this->files[$path] = new PHP_CodeCoverage_Data_File($path, $_lines);
+
+        foreach ($lines as $lineNumber => $flag) {
+            $_lines->addLine($lineNumber, new PHP_CodeCoverage_Data_Line($flag != -2, $flag == -2));
         }
 
-        if ($b > 0) {
-            $percent = ($a / $b) * 100;
-        } else {
-            $percent = 100;
-        }
-
-        if ($asString) {
-            if ($fixedWidth) {
-                return sprintf('%6.2F%%', $percent);
+        for ($lineNumber = 1; $lineNumber <= PHP_CodeCoverage_Util::numberOfLinesInFile($path); $lineNumber++) {
+            if (!isset($lines[$lineNumber])) {
+                $_lines->addLine($lineNumber, new PHP_CodeCoverage_Data_Line(false, false));
             }
-
-            return sprintf('%01.2F%%', $percent);
-        } else {
-            return $percent;
         }
     }
 }

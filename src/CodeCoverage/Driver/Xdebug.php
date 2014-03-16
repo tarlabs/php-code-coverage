@@ -108,7 +108,7 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
             }
 
             if (file_exists($file)) {
-                $numLines = $this->getNumberOfLinesInFile($file);
+                $numLines = PHP_CodeCoverage_Util::numberOfLinesInFile($file);
 
                 foreach (array_keys($data[$file]) as $line) {
                     if (isset($data[$file][$line]) && $line > $numLines) {
@@ -119,22 +119,5 @@ class PHP_CodeCoverage_Driver_Xdebug implements PHP_CodeCoverage_Driver
         }
 
         return $data;
-    }
-
-    /**
-     * @param  string $file
-     * @return integer
-     * @since Method available since Release 2.0.0
-     */
-    private function getNumberOfLinesInFile($file)
-    {
-        $buffer = file_get_contents($file);
-        $lines  = substr_count($buffer, "\n");
-
-        if (substr($buffer, -1) !== "\n") {
-            $lines++;
-        }
-
-        return $lines;
     }
 }

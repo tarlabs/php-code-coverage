@@ -40,11 +40,11 @@
  * @copyright  2009-2014 Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      File available since Release 1.0.0
+ * @since      File available since Release 2.1.0
  */
 
 /**
- * Utility methods.
+ *
  *
  * @category   PHP
  * @package    CodeCoverage
@@ -52,53 +52,64 @@
  * @copyright  2009-2014 Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      Class available since Release 1.0.0
+ * @since      Class available since Release 2.1.0
  */
-class PHP_CodeCoverage_Util
+class PHP_CodeCoverage_Data_Line
 {
     /**
-     * @param  string $file
-     * @return integer
+     * @var string[]
      */
-    public static function numberOfLinesInFile($file)
+    private $coveringTests = array();
+
+    /**
+     * @var boolean
+     */
+    private $executable;
+
+    /**
+     * @var boolean
+     */
+    private $deadCode;
+
+    /**
+     * @param boolean $executable
+     * @param boolean $deadCode
+     */
+    public function __construct($executable, $deadCode)
     {
-        $buffer = file_get_contents($file);
-        $lines  = substr_count($buffer, "\n");
-
-        if (substr($buffer, -1) !== "\n") {
-            $lines++;
-        }
-
-        return $lines;
+        $this->executable = $executable;
+        $this->deadCode   = $deadCode;
     }
 
     /**
-     * @param  float   $a
-     * @param  float   $b
-     * @param  boolean $asString
-     * @param  boolean $fixedWidth
-     * @return float ($a / $b) * 100
+     * @param string $id
      */
-    public static function percent($a, $b, $asString = false, $fixedWidth = false)
+    public function addCoveringTest($id)
     {
-        if ($asString && $b == 0) {
-            return '';
-        }
+        $this->coveringTests[] = $id;
+    }
 
-        if ($b > 0) {
-            $percent = ($a / $b) * 100;
-        } else {
-            $percent = 100;
-        }
+    /**
+     * @return boolean
+     */
+    public function isExecutable()
+    {
+        return $this->executable;
+    }
 
-        if ($asString) {
-            if ($fixedWidth) {
-                return sprintf('%6.2F%%', $percent);
-            }
+    /**
+     * @return boolean
+     */
+    public function isDeadCode()
+    {
+        return $this->deadCode;
+    }
 
-            return sprintf('%01.2F%%', $percent);
-        } else {
-            return $percent;
-        }
+    /**
+     * @return boolean
+     */
+    public function isCovered()
+    {
+        return !empty($this->coveringTests);
     }
 }

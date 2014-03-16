@@ -40,11 +40,11 @@
  * @copyright  2009-2014 Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      File available since Release 1.0.0
+ * @since      File available since Release 2.1.0
  */
 
 /**
- * Utility methods.
+ *
  *
  * @category   PHP
  * @package    CodeCoverage
@@ -52,53 +52,44 @@
  * @copyright  2009-2014 Sebastian Bergmann <sebastian@phpunit.de>
  * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
  * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      Class available since Release 1.0.0
+ * @since      Class available since Release 2.1.0
  */
-class PHP_CodeCoverage_Util
+class PHP_CodeCoverage_Data_File
 {
     /**
-     * @param  string $file
-     * @return integer
+     * @var PHP_CodeCoverage_Data_LineCollection
      */
-    public static function numberOfLinesInFile($file)
+    private $lines;
+
+    /**
+     * @var string
+     */
+    private $path;
+
+    /**
+     * @param string                               $path
+     * @param PHP_CodeCoverage_Data_LineCollection $lines
+     */
+    public function __construct($path, PHP_CodeCoverage_Data_LineCollection $lines)
     {
-        $buffer = file_get_contents($file);
-        $lines  = substr_count($buffer, "\n");
-
-        if (substr($buffer, -1) !== "\n") {
-            $lines++;
-        }
-
-        return $lines;
+        $this->path  = $path;
+        $this->lines = $lines;
     }
 
     /**
-     * @param  float   $a
-     * @param  float   $b
-     * @param  boolean $asString
-     * @param  boolean $fixedWidth
-     * @return float ($a / $b) * 100
+     * @param string    $id
+     * @param integer[] $lines
      */
-    public static function percent($a, $b, $asString = false, $fixedWidth = false)
+    public function addCoveringTest($id, array $lines)
     {
-        if ($asString && $b == 0) {
-            return '';
-        }
+        $this->lines->addCoveringTest($id, $lines);
+    }
 
-        if ($b > 0) {
-            $percent = ($a / $b) * 100;
-        } else {
-            $percent = 100;
-        }
-
-        if ($asString) {
-            if ($fixedWidth) {
-                return sprintf('%6.2F%%', $percent);
-            }
-
-            return sprintf('%01.2F%%', $percent);
-        } else {
-            return $percent;
-        }
+    /**
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
     }
 }
