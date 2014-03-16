@@ -72,11 +72,18 @@ class PHP_CodeCoverage_Data_Line
     private $deadCode;
 
     /**
-     * @param boolean $executable
-     * @param boolean $deadCode
+     * @var PHP_CodeCoverage_Data_OpcodeCollection
      */
-    public function __construct($executable, $deadCode)
+    private $opcodes;
+
+    /**
+     * @param PHP_CodeCoverage_Data_OpcodeCollection $opcodes
+     * @param boolean                                $executable
+     * @param boolean                                $deadCode
+     */
+    public function __construct(PHP_CodeCoverage_Data_OpcodeCollection $opcodes, $executable, $deadCode)
     {
+        $this->opcodes    = $opcodes;
         $this->executable = $executable;
         $this->deadCode   = $deadCode;
     }

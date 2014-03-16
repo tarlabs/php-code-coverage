@@ -54,80 +54,32 @@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 2.1.0
  */
-class PHP_CodeCoverage_Data_FileCollection
+class PHP_CodeCoverage_Data_Function
 {
     /**
-     * @var PHP_CodeCoverage_Data_File[]
+     * @var PHP_CodeCoverage_Data_OpcodeCollection
      */
-    private $files = array();
+    private $opcodes;
 
     /**
-     * @param string $id
-     * @param array  $data
+     * @var PHP_CodeCoverage_Data_BranchCollection
      */
-    public function processData($id, array $data)
-    {
-        foreach ($data as $file => $lines) {
-            if (!isset($this->files[$file])) {
-                $this->createFile($file, $lines);
-            }
-
-            $_lines = array();
-
-            foreach ($lines as $lineNumber => $flag) {
-                if ($flag == 1) {
-                    $_lines[] = $lineNumber;
-                }
-            }
-
-            $this->files[$file]->addCoveringTest($id, $_lines);
-        }
-    }
+    private $branches;
 
     /**
-     * @param PHP_CodeCoverage_Data_FileCollection $other
+     * @var PHP_CodeCoverage_Data_PathCollection
      */
-    public function merge(PHP_CodeCoverage_Data_FileCollection $other)
-    {
-    }
+    private $paths;
 
     /**
-     * @param string $path
-     * @param array  $lines
+     * @param PHP_CodeCoverage_Data_OpcodeCollection $opcodes
+     * @param PHP_CodeCoverage_Data_BranchCollection $branches
+     * @param PHP_CodeCoverage_Data_PathCollection   $paths
      */
-    private function createFile($path, array $lines)
+    public function __construct(PHP_CodeCoverage_Data_OpcodeCollection $opcodes, PHP_CodeCoverage_Data_BranchCollection $branches, PHP_CodeCoverage_Data_PathCollection $paths)
     {
-        $_lines    = new PHP_CodeCoverage_Data_LineCollection;
-        $functions = new PHP_CodeCoverage_Data_FunctionCollection;
-        // @todo Populate $functions
-
-        foreach ($lines as $lineNumber => $flag) {
-            $opcodes = new PHP_CodeCoverage_Data_OpcodeCollection;
-            // @todo Populate $opcodes
-
-            $_lines->addLine(
-                $lineNumber,
-                new PHP_CodeCoverage_Data_Line(
-                    $opcodes,
-                    $flag != -2,
-                    $flag == -2
-                )
-            );
-        }
-
-        for ($lineNumber = 1; $lineNumber <= PHP_CodeCoverage_Util::numberOfLinesInFile($path); $lineNumber++) {
-            if (!isset($lines[$lineNumber])) {
-                $_lines->addLine(
-                    $lineNumber,
-                    new PHP_CodeCoverage_Data_Line(
-                        new PHP_CodeCoverage_Data_OpcodeCollection,
-                        false,
-                        false
-                    )
-                );
-            }
-        }
-
-        $this->files[$path] = new PHP_CodeCoverage_Data_File($path, $functions, $_lines);
+        $this->opcodes  = $opcodes;
+        $this->branches = $branches;
+        $this->paths    = $paths;
     }
 }

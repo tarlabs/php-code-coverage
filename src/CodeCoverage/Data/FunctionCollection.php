@@ -54,80 +54,18 @@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 2.1.0
  */
-class PHP_CodeCoverage_Data_FileCollection
+class PHP_CodeCoverage_Data_FunctionCollection
 {
     /**
-     * @var PHP_CodeCoverage_Data_File[]
+     * @var PHP_CodeCoverage_Data_Function[]
      */
-    private $files = array();
+    private $functions = array();
 
     /**
-     * @param string $id
-     * @param array  $data
+     * @param PHP_CodeCoverage_Data_Function $function
      */
-    public function processData($id, array $data)
+    public function addFunction(PHP_CodeCoverage_Data_Function $function)
     {
-        foreach ($data as $file => $lines) {
-            if (!isset($this->files[$file])) {
-                $this->createFile($file, $lines);
-            }
-
-            $_lines = array();
-
-            foreach ($lines as $lineNumber => $flag) {
-                if ($flag == 1) {
-                    $_lines[] = $lineNumber;
-                }
-            }
-
-            $this->files[$file]->addCoveringTest($id, $_lines);
-        }
-    }
-
-    /**
-     * @param PHP_CodeCoverage_Data_FileCollection $other
-     */
-    public function merge(PHP_CodeCoverage_Data_FileCollection $other)
-    {
-    }
-
-    /**
-     * @param string $path
-     * @param array  $lines
-     */
-    private function createFile($path, array $lines)
-    {
-        $_lines    = new PHP_CodeCoverage_Data_LineCollection;
-        $functions = new PHP_CodeCoverage_Data_FunctionCollection;
-        // @todo Populate $functions
-
-        foreach ($lines as $lineNumber => $flag) {
-            $opcodes = new PHP_CodeCoverage_Data_OpcodeCollection;
-            // @todo Populate $opcodes
-
-            $_lines->addLine(
-                $lineNumber,
-                new PHP_CodeCoverage_Data_Line(
-                    $opcodes,
-                    $flag != -2,
-                    $flag == -2
-                )
-            );
-        }
-
-        for ($lineNumber = 1; $lineNumber <= PHP_CodeCoverage_Util::numberOfLinesInFile($path); $lineNumber++) {
-            if (!isset($lines[$lineNumber])) {
-                $_lines->addLine(
-                    $lineNumber,
-                    new PHP_CodeCoverage_Data_Line(
-                        new PHP_CodeCoverage_Data_OpcodeCollection,
-                        false,
-                        false
-                    )
-                );
-            }
-        }
-
-        $this->files[$path] = new PHP_CodeCoverage_Data_File($path, $functions, $_lines);
+        $this->functions[] = $function;
     }
 }

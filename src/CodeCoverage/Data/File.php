@@ -57,6 +57,11 @@
 class PHP_CodeCoverage_Data_File
 {
     /**
+     * @var PHP_CodeCoverage_Data_FunctionCollection
+     */
+    private $functions;
+
+    /**
      * @var PHP_CodeCoverage_Data_LineCollection
      */
     private $lines;
@@ -67,13 +72,15 @@ class PHP_CodeCoverage_Data_File
     private $path;
 
     /**
-     * @param string                               $path
-     * @param PHP_CodeCoverage_Data_LineCollection $lines
+     * @param string                                   $path
+     * @param PHP_CodeCoverage_Data_FunctionCollection $functions
+     * @param PHP_CodeCoverage_Data_LineCollection     $lines
      */
-    public function __construct($path, PHP_CodeCoverage_Data_LineCollection $lines)
+    public function __construct($path, PHP_CodeCoverage_Data_FunctionCollection $functions, PHP_CodeCoverage_Data_LineCollection $lines)
     {
-        $this->path  = $path;
-        $this->lines = $lines;
+        $this->path      = $path;
+        $this->functions = $functions;
+        $this->lines     = $lines;
     }
 
     /**
