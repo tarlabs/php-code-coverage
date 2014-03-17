@@ -62,12 +62,18 @@ class PHP_CodeCoverage_Data_LineCollection implements Countable, IteratorAggrega
     private $lines = array();
 
     /**
+     * @var boolean
+     */
+    private $sorted = false;
+
+    /**
      * @param integer                    $lineNumber
      * @param PHP_CodeCoverage_Data_Line $line
      */
     public function addLine($lineNumber, PHP_CodeCoverage_Data_Line $line)
     {
         $this->lines[$lineNumber] = $line;
+        $this->sorted             = false;
     }
 
     /**
@@ -94,6 +100,11 @@ class PHP_CodeCoverage_Data_LineCollection implements Countable, IteratorAggrega
      */
     public function getIterator()
     {
+        if (!$this->sorted) {
+            ksort($this->lines);
+            $this->sorted = true;
+        }
+
         return new ArrayIterator($this->lines);
     }
 }
