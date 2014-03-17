@@ -54,7 +54,7 @@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 2.1.0
  */
-class PHP_CodeCoverage_Data_PathCollection
+class PHP_CodeCoverage_Data_PathCollection implements Countable, IteratorAggregate
 {
     /**
      * @var PHP_CodeCoverage_Data_Path[]
@@ -67,5 +67,21 @@ class PHP_CodeCoverage_Data_PathCollection
     public function addPath(PHP_CodeCoverage_Data_Path $path)
     {
         $this->paths[] = $path;
+    }
+
+    /**
+     * @return integer
+     */
+    public function count()
+    {
+        return count($this->paths);
+    }
+
+    /**
+     * @return ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->paths);
     }
 }

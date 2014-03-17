@@ -54,7 +54,7 @@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 2.1.0
  */
-class PHP_CodeCoverage_Data_FunctionCollection
+class PHP_CodeCoverage_Data_FunctionCollection implements Countable, IteratorAggregate
 {
     /**
      * @var PHP_CodeCoverage_Data_Function[]
@@ -67,5 +67,21 @@ class PHP_CodeCoverage_Data_FunctionCollection
     public function addFunction(PHP_CodeCoverage_Data_Function $function)
     {
         $this->functions[] = $function;
+    }
+
+    /**
+     * @return integer
+     */
+    public function count()
+    {
+        return count($this->functions);
+    }
+
+    /**
+     * @return ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->functions);
     }
 }

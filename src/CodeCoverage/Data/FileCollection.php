@@ -54,7 +54,7 @@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 2.1.0
  */
-class PHP_CodeCoverage_Data_FileCollection
+class PHP_CodeCoverage_Data_FileCollection implements Countable, IteratorAggregate
 {
     /**
      * @var PHP_CodeCoverage_Data_File[]
@@ -129,5 +129,21 @@ class PHP_CodeCoverage_Data_FileCollection
         }
 
         $this->files[$path] = new PHP_CodeCoverage_Data_File($path, $functions, $_lines);
+    }
+
+    /**
+     * @return integer
+     */
+    public function count()
+    {
+        return count($this->files);
+    }
+
+    /**
+     * @return ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->files);
     }
 }

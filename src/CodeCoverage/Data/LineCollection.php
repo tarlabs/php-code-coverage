@@ -54,7 +54,7 @@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 2.1.0
  */
-class PHP_CodeCoverage_Data_LineCollection
+class PHP_CodeCoverage_Data_LineCollection implements Countable, IteratorAggregate
 {
     /**
      * @var PHP_CodeCoverage_Data_Line[]
@@ -79,5 +79,21 @@ class PHP_CodeCoverage_Data_LineCollection
         foreach ($lines as $line) {
             $this->lines[$line]->addCoveringTest($id);
         }
+    }
+
+    /**
+     * @return integer
+     */
+    public function count()
+    {
+        return count($this->lines);
+    }
+
+    /**
+     * @return ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->lines);
     }
 }

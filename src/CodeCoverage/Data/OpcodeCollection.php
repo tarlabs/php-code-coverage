@@ -54,7 +54,7 @@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 2.1.0
  */
-class PHP_CodeCoverage_Data_OpcodeCollection
+class PHP_CodeCoverage_Data_OpcodeCollection implements Countable, IteratorAggregate
 {
     /**
      * @var PHP_CodeCoverage_Data_Opcode[]
@@ -67,5 +67,21 @@ class PHP_CodeCoverage_Data_OpcodeCollection
     public function addOpcode(PHP_CodeCoverage_Data_Opcode $opcode)
     {
         $this->opcodes[] = $opcode;
+    }
+
+    /**
+     * @return integer
+     */
+    public function count()
+    {
+        return count($this->opcodes);
+    }
+
+    /**
+     * @return ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->opcodes);
     }
 }

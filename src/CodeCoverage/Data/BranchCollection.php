@@ -54,7 +54,7 @@
  * @link       http://github.com/sebastianbergmann/php-code-coverage
  * @since      Class available since Release 2.1.0
  */
-class PHP_CodeCoverage_Data_BranchCollection
+class PHP_CodeCoverage_Data_BranchCollection implements Countable, IteratorAggregate
 {
     /**
      * @var PHP_CodeCoverage_Data_Branch[]
@@ -67,5 +67,21 @@ class PHP_CodeCoverage_Data_BranchCollection
     public function addBranch(PHP_CodeCoverage_Data_Branch $branch)
     {
         $this->branches[] = $branch;
+    }
+
+    /**
+     * @return integer
+     */
+    public function count()
+    {
+        return count($this->branches);
+    }
+
+    /**
+     * @return ArrayIterator
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->branches);
     }
 }
