@@ -97,6 +97,22 @@ class PHP_CodeCoverage_Data_Line
     }
 
     /**
+     * @return string[]
+     */
+    public function getCoveringTests()
+    {
+        return $this->coveringTests;
+    }
+
+    /**
+     * @return PHP_CodeCoverage_Data_OpcodeCollection
+     */
+    public function getOpcodes()
+    {
+        return $this->opcodes;
+    }
+
+    /**
      * @return boolean
      */
     public function isExecutable()

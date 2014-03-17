@@ -93,6 +93,22 @@ class PHP_CodeCoverage_Data_File
     }
 
     /**
+     * @return PHP_CodeCoverage_Data_FunctionCollection
+     */
+    public function getFunctions()
+    {
+        return $this->functions;
+    }
+
+    /**
+     * @return PHP_CodeCoverage_Data_LineCollection
+     */
+    public function getLines()
+    {
+        return $this->lines;
+    }
+
+    /**
      * @return string
      */
     public function getPath()
