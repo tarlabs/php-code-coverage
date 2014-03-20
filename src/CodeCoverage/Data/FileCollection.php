@@ -67,14 +67,14 @@ class PHP_CodeCoverage_Data_FileCollection implements Countable, IteratorAggrega
      */
     public function processData($id, array $data)
     {
-        foreach ($data as $file => $lines) {
+        foreach ($data as $file => $_data) {
             if (!isset($this->files[$file])) {
-                $this->createFile($file, $lines);
+                $this->createFile($file, $_data);
             }
 
             $_lines = array();
 
-            foreach ($lines as $lineNumber => $flag) {
+            foreach ($_data['lines'] as $lineNumber => $flag) {
                 if ($flag == 1) {
                     $_lines[] = $lineNumber;
                 }
@@ -93,15 +93,15 @@ class PHP_CodeCoverage_Data_FileCollection implements Countable, IteratorAggrega
 
     /**
      * @param string $path
-     * @param array  $lines
+     * @param array  $data
      */
-    private function createFile($path, array $lines)
+    private function createFile($path, array $data)
     {
         $_lines    = new PHP_CodeCoverage_Data_LineCollection;
         $functions = new PHP_CodeCoverage_Data_FunctionCollection;
         // @todo Populate $functions
 
-        foreach ($lines as $lineNumber => $flag) {
+        foreach ($data['lines'] as $lineNumber => $flag) {
             $opcodes = new PHP_CodeCoverage_Data_OpcodeCollection;
             // @todo Populate $opcodes
 

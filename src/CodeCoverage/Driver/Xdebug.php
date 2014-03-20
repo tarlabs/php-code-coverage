@@ -58,7 +58,12 @@
 class PHP_CodeCoverage_Driver_Xdebug extends PHP_CodeCoverage_Driver
 {
     /**
-     * @throws PHP_CodeCoverage_Exception
+     * @var integer
+     */
+    private $flags = false;
+
+    /**
+     * Constructor.
      */
     protected function ensureDriverCanWork()
     {
@@ -72,6 +77,12 @@ class PHP_CodeCoverage_Driver_Xdebug extends PHP_CodeCoverage_Driver
                 'xdebug.coverage_enable=On has to be set in php.ini'
             );
         }
+
+        $this->flags = XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE;
+
+        if (defined('XDEBUG_CC_BRANCH_CHECK')) {
+            $this->flags |= XDEBUG_CC_BRANCH_CHECK;
+        }
     }
 
     /**
@@ -79,7 +90,7 @@ class PHP_CodeCoverage_Driver_Xdebug extends PHP_CodeCoverage_Driver
      */
     protected function doStart()
     {
-        xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+        xdebug_start_code_coverage($this->flags);
     }
 
     /**
@@ -102,16 +113,20 @@ class PHP_CodeCoverage_Driver_Xdebug extends PHP_CodeCoverage_Driver
     protected function cleanup(array &$data)
     {
         foreach (array_keys($data) as $file) {
-            if (isset($data[$file][0])) {
-                unset($data[$file][0]);
+            if (!isset($data[$file]['lines'])) {
+                $data[$file] = array('lines' => $data[$file]);
+            }
+
+            if (isset($data[$file]['lines'][0])) {
+                unset($data[$file]['lines'][0]);
             }
 
             if (file_exists($file)) {
                 $numLines = PHP_CodeCoverage_Util::numberOfLinesInFile($file);
 
-                foreach (array_keys($data[$file]) as $line) {
-                    if (isset($data[$file][$line]) && $line > $numLines) {
-                        unset($data[$file][$line]);
+                foreach (array_keys($data[$file]['lines']) as $line) {
+                    if (isset($data[$file]['lines'][$line]) && $line > $numLines) {
+                        unset($data[$file]['lines'][$line]);
                     }
                 }
             }
